@@ -2,4 +2,10 @@
   <Folder Name="/domain/">
     <Project Path="domain/Store/Store.csproj" />
   </Folder>
+  <Folder Name="/Infastructure/">
+    <Project Path="Infastructure/Store.Memory/Store.Memory.csproj" Id="215d7cd5-a4a0-45a8-a270-219a640db49f" />
+  </Folder>
+  <Folder Name="/presentation/">
+    <Project Path="Store.Web/Store.Web.csproj" Id="c22df353-a10a-483e-9168-76cbc3c0e994" />
+  </Folder>
 </Solution>

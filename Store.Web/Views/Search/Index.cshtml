@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Store.Book>
+@{
+    ViewData["Title"] = "Search Page";
+}
+<h1>Index</h1>
+<p>
+    <a asp-action="CREATE"></a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model=>model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.Title)
+                </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

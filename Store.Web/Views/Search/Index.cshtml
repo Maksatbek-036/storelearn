@@ -1,33 +1,24 @@
-﻿@model IEnumerable<Store.Book>
+﻿@model Book[]
 @{
     ViewData["Title"] = "Search Page";
 }
-<h1>Index</h1>
-<p>
-    <a asp-action="CREATE"></a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model=>model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model=>model.Title)
-                </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+<h1>Результаты поиска</h1>
+@if (Model.Length == 0)
+{
+    <p>Ничего не найдено</p>
+}
+
+else
+{
+   <ul>
+        @foreach (var book in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-            </tr>
+            <li>
+                <a href="@Url.Action("Index","Book",new {id=book.Id})">@book.Title</a>
+            </li>
         }
-    </tbody>
-</table>
+   </ul>
+
+}
+
+

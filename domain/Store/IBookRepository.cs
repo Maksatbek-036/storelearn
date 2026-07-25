@@ -6,7 +6,9 @@ namespace Store
 {
     public interface IBookRepository
     {
-        Book[] GetAllByTitle(string titlePartial);
+      
+        Book[] GetAllByTitleOrAuthor(string titleOrAuthor);
+        Book[] GetAllByIsbn(string isbn);
 
     }
 }

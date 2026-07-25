@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/domain/">
     <Project Path="domain/Store/Store.csproj" />
+    <Project Path="Store.Test/Store.Tests.csproj" Id="3c8654fc-d270-42c8-98b7-37e15d8f9739" />
   </Folder>
   <Folder Name="/Infastructure/">
     <Project Path="Infastructure/Store.Memory/Store.Memory.csproj" Id="215d7cd5-a4a0-45a8-a270-219a640db49f" />

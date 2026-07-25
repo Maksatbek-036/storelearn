@@ -1,0 +1,9 @@
+﻿@model Book
+@{
+    ViewData["Title"] =Model.Title;
+}
+
+<h2>@Model.Title</h2>
+<p style="font-weight: bold;">Author: @Model.Author</p>
+<p>@Model.Description</p>
+<p>Price: @Model.Price</p>

@@ -5,8 +5,9 @@ using Moq;
 
 namespace Store.Tests
 {
-    public class BookServiceTest
+    public class BookServiceTests
     {
+    
         //[Fact] Реализация теста с использованим Moq
         //public void GetAllByQuery_WithIsbn_CallGetByIsbn()
         //{
@@ -27,24 +28,25 @@ namespace Store.Tests
 
         //}
 
-        [Fact]
-        public void GetAllByQuery_WithIsbn_CallGetByTitleOrAuthor()
-        {
+        //[Fact]
+        //public void GetAllByQuery_WithIsbn_CallGetByTitleOrAuthor()
+        //{
 
-            var bookRepository = new Mock<IBookRepository>();
-            bookRepository.Setup(x => x.GetAllByIsbn(It.IsAny<string>()))
-                .Returns(new Book[] { new Book(1, "", "", "") });
+        //    var bookRepository = new Mock<IBookRepository>();
+        //    bookRepository.Setup(x => x.GetAllByIsbn(It.IsAny<string>()))
+        //        .Returns(new Book[] { new Book(1,"","","","",0.0m) });
 
-            bookRepository.Setup(x => x.GetAllByTitleOrAuthor(It.IsAny<string>()))
-                .Returns(new Book[] { new Book(2, "", "", "") });
-            var invalidIsbn = "978-3-16-148410-0";
-            var bookService = new BookService(bookRepository.Object);
-            var actual = bookService.GetAllByQuery(invalidIsbn);
+        //    bookRepository.Setup(x => x.GetAllByTitleOrAuthor(It.IsAny<string>()))
+        //        .Returns(new Book[] { new Book(2,"","","","",0) });
+        //    var invalidIsbn = "978-3-16-148410-0";
+        //    var bookService = new BookService(bookRepository.Object);
+        //    var actual = bookService.GetAllByQuery(invalidIsbn);
 
-            Assert.Collection(actual, book => Assert.Equal(2, book.Id));
+        //    Assert.Collection(actual, book => Assert.Equal(2, book.Id));
 
 
-        }
+        //}
+    
 
         [Fact]
         public void GetAllByQuery_WithIsbn_CallGetByIsbn()
@@ -55,12 +57,12 @@ namespace Store.Tests
             var bookRepository = new StubBookRepository();
             bookRepository.ResultOfGetAllByIsbn = new Book[] 
             { 
-                new Book(idOfIsbnSearch, "", "", "") 
+                new Book(idOfIsbnSearch,"","","","",0) 
             };
 
             bookRepository.ResultOfGetAllByTitleOrAuthor = new Book[] 
             {
-                new Book(idOfTitleOrAuthorSearch, "", "", "") 
+                new Book(idOfTitleOrAuthorSearch, "", "", "", "", 0) 
             };
             var bookService = new BookService(bookRepository);
 
@@ -78,12 +80,12 @@ namespace Store.Tests
             var bookRepository = new StubBookRepository();
             bookRepository.ResultOfGetAllByIsbn = new Book[]
             {
-                new Book(idOfIsbnSearch, "", "", "")
+                new Book(idOfIsbnSearch, "", "", "", "", 0)
             };
 
             bookRepository.ResultOfGetAllByTitleOrAuthor = new Book[]
             {
-                new Book(idOfTitleOrAuthorSearch, "", "", "")
+                new Book(idOfTitleOrAuthorSearch, "", "", "", "", 0)
             };
             var bookService = new BookService(bookRepository);
 

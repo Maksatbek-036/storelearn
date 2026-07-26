@@ -10,14 +10,14 @@
 
 else
 {
-   <ul>
+    <ul>
         @foreach (var book in Model)
         {
             <li>
-                <a href="@Url.Action("Index","Book",new {id=book.Id})">@book.Title</a>
+                <a href="@Url.Action("Index", "Book", new { id = book.Id })">@book.Title</a>
             </li>
         }
-   </ul>
+    </ul>
 
 }
 

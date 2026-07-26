@@ -12,12 +12,31 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white ">
-            <a  class="navbar-brand m-1"  asp-area="" asp-action="Index" asp-controller="Home" >Интернет-магазин на C#</a>
+            <a class="navbar-brand m-1" asp-area="" asp-action="Index" asp-controller="Home">Интернет-магазин на C#</a>
             <form class="d-inline-flex m-1 my-lg-0" action="@Url.Action("Index", "Search")">
-                <input class="form-control m-1 mr-sm-2" type="text" placeholder="Автор или название" name="query"/>
-               
-            <button class="btn btn-outline-success my-2 " type="submit">Поиск</button>
+                <input class="form-control m-1 mr-sm-2" type="text" placeholder="Автор или название" name="query" />
+
+                <button class="btn btn-outline-success my-2 " type="submit">Поиск</button>
             </form>
+
+            <span class="navbar-text ml-auto">
+                @{
+                    Cart cart;
+                    if (!Context.Session.TryGetCart(out cart))
+                    {
+                        cart = new Cart();
+                    }
+
+                    if (cart.Items.Count == 0)
+                    {
+                        @:Корзина пуста
+                    }
+                    else
+                    {
+                        @:Товаров в корзине: @cart.Items.Count, на сумму: @cart.Amount
+                    }
+                }
+            </span>
         </nav>
     </header>
     <div class="container">

@@ -21,19 +21,17 @@
 
             <span class="navbar-text ml-auto">
                 @{
-                    Cart cart;
-                    if (!Context.Session.TryGetCart(out cart))
+                        
+
+                    if (Context.Session.TryGetCart(out Cart cart) && cart.TotalCount>0)
                     {
-                        cart = new Cart();
+                       <span href="">Товаров в корзине: @cart.TotalCount, на сумму @Convert.ToDouble(cart.TotalPrice)</span>
                     }
 
-                    if (cart.Items.Count == 0)
-                    {
-                        @:Корзина пуста
-                    }
+                   
                     else
                     {
-                        @:Товаров в корзине: @cart.Items.Count, на сумму: @cart.Amount
+                       @:Корзина пуста 
                     }
                 }
             </span>

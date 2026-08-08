@@ -32,7 +32,7 @@ namespace Store.Web
                 {
                     var orderId=reader.ReadInt32();
                     var totalCount = reader.ReadInt32();
-                    var totalPrice = reader.ReadInt32();
+                    var totalPrice = reader.ReadDecimal();
 
                     cart = new Cart(orderId)
                     {

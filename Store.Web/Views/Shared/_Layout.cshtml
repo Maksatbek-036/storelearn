@@ -25,7 +25,7 @@
 
                     if (Context.Session.TryGetCart(out Cart cart) && cart.TotalCount>0)
                     {
-                       <span href="">Товаров в корзине: @cart.TotalCount, на сумму @Convert.ToDouble(cart.TotalPrice)</span>
+                       <a href="@Url.Action("Index","Order")">Товаров в корзине: @cart.TotalCount, на сумму @cart.TotalPrice</a>
                     }
 
                    

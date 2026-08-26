@@ -66,9 +66,12 @@ namespace Store
         }
         public OrderItem GetItem(int bookId)
         {
-            int index = items.FindIndex(item => item.BookId == bookId);
+            int index = items.FindIndex(item=>item.BookId== bookId);
             if (index == -1)
+            {
+
                 throw new InvalidOperationException("Book not found.");
+            }
             return items[index];
         }
         public void AddOrUpdateItem(Book book, int count)

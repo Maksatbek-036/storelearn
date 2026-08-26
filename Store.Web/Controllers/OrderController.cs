@@ -3,7 +3,7 @@ using Store.Web.Models;
 
 namespace Store.Web.Controllers
 {
-    public class OrderController: Controller
+    public class OrderController : Controller
     {
         private readonly IBookRepository bookRepository;
         private readonly IOrderRepository orderRepository;
@@ -13,7 +13,8 @@ namespace Store.Web.Controllers
             this.orderRepository = orderRepository;
         }
         public IActionResult Index()
-        {   if(HttpContext.Session.TryGetCart(out Cart cart))
+        {
+            if (HttpContext.Session.TryGetCart(out Cart cart))
             {
                 var order = orderRepository.GetById(cart.OrderId);
                 OrderModel model = Map(order);
@@ -29,11 +30,11 @@ namespace Store.Web.Controllers
                              join book in books on item.BookId equals book.Id
                              select new OrderItemModel
                              {
-                                 BookId=book.Id,
-                                 Author=book.Author,
-                                 Count=item.Count,
-                                 Price=item.Price,
-                                 Title=book.Title
+                                 BookId = book.Id,
+                                 Author = book.Author,
+                                 Count = item.Count,
+                                 Price = item.Price,
+                                 Title = book.Title
                              };
             return new OrderModel
             {
@@ -46,21 +47,21 @@ namespace Store.Web.Controllers
         public IActionResult AddBook(int id)
         {
             (Order order, Cart cart) = GetOrCreateOrderOrCart();
-            order.GetItem(id).Count += 1;
+            order.GetItem(id).Count++;
             SaveOrderAndCart(order, cart);
-            
+
 
             return RedirectToAction("Index", "Book", new { id });
         }
         [HttpPost]
-        public IActionResult UpdateItem(int id,int count)
+        public IActionResult UpdateItem(int id, int count)
         {
-            (Order order,Cart cart) = GetOrCreateOrderOrCart();
+            (Order order, Cart cart) = GetOrCreateOrderOrCart();
             order.GetItem(id).Count = count;
-            SaveOrderAndCart(order,cart);
+            SaveOrderAndCart(order, cart);
             return RedirectToAction("Index", "Book", new { id });
         }
-   
+
 
         private void SaveOrderAndCart(Order order, Cart cart)
         {
@@ -69,25 +70,26 @@ namespace Store.Web.Controllers
             cart.TotalPrice = order.TotalPrice;
             HttpContext.Session.Set(cart);
         }
-
-        public IActionResult AddItem(int id,int count)
-        {
-            (Order order, Cart cart) = GetOrCreateOrderOrCart();
-            Book book = bookRepository.GetById(id);
-            order.AddOrUpdateItem(book, count);
-
-            return RedirectToAction("Index", "Book", new { id });
-        }
-        public IActionResult RemoveItem(int id)
+       
+        public IActionResult AddItem(int id, int count = 1)
         {
             (Order order, Cart cart) = GetOrCreateOrderOrCart();
             var book = bookRepository.GetById(id);
-            order.RemoveItem(id);
+            order.AddOrUpdateItem(book, count);
+            SaveOrderAndCart(order, cart);
+        
+            return RedirectToAction("Index", "Book", new {id=id});
+        }
+        public IActionResult RemoveItem(int bookId)
+        {
+            (Order order, Cart cart) = GetOrCreateOrderOrCart();
+            var book = bookRepository.GetById(bookId);
+            order.RemoveItem(bookId);
             SaveOrderAndCart(order, cart);
 
-            return RedirectToAction("Index", "Book", new { id });
+            return RedirectToAction("Index", "Book", new { bookId });
         }
-        private (Order order,Cart cart) GetOrCreateOrderOrCart()
+        private (Order order, Cart cart) GetOrCreateOrderOrCart()
         {
             Order order;
             Cart cart;

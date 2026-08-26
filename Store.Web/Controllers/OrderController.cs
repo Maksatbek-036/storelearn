@@ -71,14 +71,14 @@ namespace Store.Web.Controllers
             HttpContext.Session.Set(cart);
         }
        
-        public IActionResult AddItem(int id, int count = 1)
+        public IActionResult AddItem(int bookId, int count = 1)
         {
             (Order order, Cart cart) = GetOrCreateOrderOrCart();
-            var book = bookRepository.GetById(id);
+            var book = bookRepository.GetById(bookId);
             order.AddOrUpdateItem(book, count);
             SaveOrderAndCart(order, cart);
         
-            return RedirectToAction("Index", "Book", new {id=id});
+            return RedirectToAction("Index", "Book", new {id=bookId});
         }
         public IActionResult RemoveItem(int bookId)
         {

@@ -56,9 +56,9 @@ namespace Store
         }
         public void RemoveItem(int bookId)
         {
-            
-            int index = items.FindIndex(item => item.BookId == bookId);
 
+            int index = items.FindIndex(items => items.BookId == bookId);
+            Console.WriteLine(index);
             if (index == -1)
                 ThrowItemException("Order does not contain item.",bookId);
 

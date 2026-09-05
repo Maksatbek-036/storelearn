@@ -8,6 +8,12 @@ namespace Store.Tests
     {
         public Book[] ResultOfGetAllByIsbn { get; set; } 
         public Book[] ResultOfGetAllByTitleOrAuthor { get; set; }
+
+        public Book[] GetAllByIds(IEnumerable<int> ids)
+        {
+            throw new NotImplementedException();
+        }
+
         public Book[] GetAllByIsbn(string isbn)
         {
             return ResultOfGetAllByIsbn;

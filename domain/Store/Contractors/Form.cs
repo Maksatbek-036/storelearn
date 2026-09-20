@@ -12,7 +12,7 @@ namespace Store.Contractors
         public bool IsFinal {  get; }
         public IReadOnlyList<Field> Fealds { get; }
 
-        public Form(string uniqued,int orderId,int step,bool osFinal,IEnumerable<Field> fealds)
+        public Form(string uniqued,int orderId,int step,bool isFinal,IEnumerable<Field> fealds)
         {
             if (string.IsNullOrWhiteSpace(uniqued))
             {
@@ -30,7 +30,7 @@ namespace Store.Contractors
             OrderId = orderId;
             Fealds = fealds.ToArray();
             Step= step;
-            IsFinal = IsFinal;
+            IsFinal = isFinal;
         }
     }
 }

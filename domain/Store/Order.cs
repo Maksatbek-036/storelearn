@@ -22,9 +22,12 @@ namespace Store
         }
         public decimal TotalPrice
         {
-            get { return items.Sum(item => item.Price * item.Count); }
+            get { return items.Sum(item => item.Price * item.Count)+(Delivery?.Amount??0m); }
         }
 
+        public string CellPhone { get; set; }
+        public OrderDelivery Delivery { get; set; }
+        public OrderPayment Payment { get; set; }
         public Order(int id, IEnumerable<OrderItem> items)
         {
             if (items == null)

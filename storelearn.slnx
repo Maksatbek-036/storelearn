@@ -6,7 +6,11 @@
   <Folder Name="/Infastructure/">
     <Project Path="Infastructure/Store.Memory/Store.Memory.csproj" Id="215d7cd5-a4a0-45a8-a270-219a640db49f" />
   </Folder>
+  <Folder Name="/plugins/">
+    <Project Path="plugins/YandexKassa/YandexKassa.csproj" Id="f994ad45-413c-4265-9ac8-6537200f6094" />
+  </Folder>
   <Folder Name="/presentation/">
+    <Project Path="Store.Web.Contractors/Store.Web.Contractors.csproj" Id="3178b913-843e-4d29-940d-1b4f47b66847" />
     <Project Path="Store.Web/Store.Web.csproj" Id="c22df353-a10a-483e-9168-76cbc3c0e994" />
   </Folder>
 </Solution>

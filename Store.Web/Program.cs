@@ -2,6 +2,8 @@ using Store;
 using Store.Contractors;
 using Store.Memory;
 using Store.Messages;
+using Store.Web.Contractors;
+using Store.YandexKassa;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,8 @@ builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
 builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
 builder.Services.AddSingleton<IDeliveryService, PostamateDeliveryService>();
 builder.Services.AddSingleton<IPaymentService, CashPaymentService>();
+builder.Services.AddSingleton<IPaymentService,YandexKassaPaymentService>();
+builder.Services.AddSingleton<IWebContractorService,YandexKassaPaymentService>();
 builder.Services.AddSingleton<BookService>();
 
 
@@ -38,14 +42,21 @@ app.UseRouting();
 app.UseSession();
 
 
+app.UseStaticFiles();
 app.UseAuthorization();
+
 
 app.MapStaticAssets();
 
+
+app.MapAreaControllerRoute(
+    name: "yandex",
+    areaName: "YandexKassa",
+    pattern: "YandexKassa/{controller=Home}/{action=Index}/{id?}"
+    );
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

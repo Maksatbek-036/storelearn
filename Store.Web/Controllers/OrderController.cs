@@ -64,20 +64,12 @@ namespace Store.Web.Controllers
                 TotalPrice = order.TotalPrice
             };
         }
-        public IActionResult AddBook(int id)
-        {
-            (Order order, Cart cart) = GetOrCreateOrderOrCart();
-            order.GetItem(id).Count++;
-            SaveOrderAndCart(order, cart);
-
-
-            return RedirectToAction("Index", "Book", new { id });
-        }
+    
         [HttpPost]
         public IActionResult UpdateItem(int id, int count)
         {
             (Order order, Cart cart) = GetOrCreateOrderOrCart();
-            order.GetItem(id).Count = count;
+            order.Items.Get(id).Count = count;
             SaveOrderAndCart(order, cart);
             return RedirectToAction("Index", "Book", new { id });
         }
@@ -95,7 +87,14 @@ namespace Store.Web.Controllers
         {
             (Order order, Cart cart) = GetOrCreateOrderOrCart();
             var book = bookRepository.GetById(bookId);
-            order.AddOrUpdateItem(book, count);
+            if (order.Items.TryGet(bookId, out OrderItem orderItem))
+            {
+                orderItem.Count += count;
+             }
+            else
+            {
+                order.Items.Add(bookId, bookId, count);
+            }
             SaveOrderAndCart(order, cart);
 
             return RedirectToAction("Index", "Book", new { id = bookId });
@@ -104,7 +103,7 @@ namespace Store.Web.Controllers
         {
             (Order order, Cart cart) = GetOrCreateOrderOrCart();
             var book = bookRepository.GetById(bookId);
-            order.RemoveItem(bookId);
+            order.Items.Remove(bookId);
             SaveOrderAndCart(order, cart);
 
             return RedirectToAction("Index", "Order");

@@ -1,9 +1,13 @@
-﻿
+﻿@using StoreYandexKassa.Areas.YandexKassa.Controllers
+@using YandexKassa.Areas.YandexKassa.Models;
+@model ExampleModel
 @{
     ViewData["Title"] = "YandexKassa";
 }
-<h1>яндекс касса</h1>
+<h1>Яндекс касса</h1>
 
-<p>
-    <a href="/YandexKassa/Home/Callback">Оплатить</a>
-</p>
+<form action="@Url.Action(nameof(HomeController.Callback))" method="post">
+    <input type="hidden" name="orderId" value="@Model.OrderId" />
+    <input type="hidden" name="returnUri" value="@Model.ReturnUri" />
+    <button type="submit" class="btn btn-success">Оплатить</button>
+</form>

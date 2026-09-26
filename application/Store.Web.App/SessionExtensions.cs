@@ -1,7 +1,10 @@
-﻿using Store.Web.Models;
+﻿
+using Microsoft.AspNetCore.Http;
+using Store.Web.App;
+
 using System.Data;
 
-namespace Store.Web
+namespace Store.Web.App
 {
     public static class SessionExtensions
     {
@@ -38,7 +41,7 @@ namespace Store.Web
                     var totalCount = reader.ReadInt32();
                     var totalPrice = reader.ReadDecimal();
 
-                    cart = new Cart(orderId)
+                    cart = new Cart(orderId,totalCount,totalPrice)
                     {
                         TotalCount = totalCount,
                         TotalPrice = totalPrice
@@ -51,5 +54,6 @@ namespace Store.Web
             cart = null;
             return false;
         }
+
     }
 }

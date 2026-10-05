@@ -9,7 +9,7 @@ namespace Store.Data
         public int Id { get; set; }
 
         public string CellPhone { get; set; }
-        public string DeliveryUniqueCode { get; set; }
+        public string DeliveryServiceName { get; set; }
         public string  DeliveryDescription{ get; set; }
         public decimal DeliveryPrice{ get; set; }
         public Dictionary<string,string> DeliveryParameters { get; set; }

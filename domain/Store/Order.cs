@@ -42,12 +42,12 @@ namespace Store
         {
             get
             {
-                if (dto.DeliveryUniqueCode == null)
+                if (dto.DeliveryServiceName == null)
                 {
                     return null;
                 }
                 return new OrderDelivery(
-                    dto.DeliveryUniqueCode,
+                    dto.DeliveryServiceName,
                     dto.DeliveryDescription,
                     dto.DeliveryPrice,
                     dto.DeliveryParameters
@@ -58,7 +58,7 @@ namespace Store
                 if (value == null)
                     throw new ArgumentNullException(nameof(Delivery));
                 dto.DeliveryDescription = value.Description;
-                dto.DeliveryUniqueCode = value.UniqueCode;
+                dto.DeliveryServiceName = value.UniqueCode;
                 dto.DeliveryParameters = value.Parametres
                     .ToDictionary(item => item.Key,
                     item => item.Value);

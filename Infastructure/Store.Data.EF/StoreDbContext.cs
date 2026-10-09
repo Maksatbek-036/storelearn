@@ -46,7 +46,7 @@ namespace Store.Data.EF
 
                 action.Property(dto => dto.DeliveryPrice).HasColumnType("money");
                 action.Property(dto => dto.PaymentServiceName).HasMaxLength(40);
-
+                action.Property(dto => dto.CellPhone).HasMaxLength(20).IsRequired(false);
                 action.Property(dto => dto.PaymentParameters).
                     HasConversion(
                     value => JsonConvert.SerializeObject(value),

@@ -7,7 +7,6 @@ namespace Store.Data.EF.Migrations
     /// <inheritdoc />
     public partial class FullTextSearch : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql("CREATE FULLTEXT CATALOG StoreFullTextCatalog AS DEFAULT", suppressTransaction: true);

@@ -7,7 +7,7 @@
 namespace Store.Data.EF.Migrations
 {
     /// <inheritdoc />
-    public partial class INIT : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,14 +35,14 @@ namespace Store.Data.EF.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CellPhone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DeliveryServiceName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    DeliveryDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CellPhone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    DeliveryServiceName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
+                    DeliveryDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeliveryPrice = table.Column<decimal>(type: "money", nullable: false),
-                    DeliveryParameters = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PaymentServiceName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    PaymentDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PaymentParameters = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DeliveryParameters = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaymentServiceName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
+                    PaymentDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaymentParameters = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

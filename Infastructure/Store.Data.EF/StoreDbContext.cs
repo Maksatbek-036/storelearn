@@ -42,18 +42,21 @@ namespace Store.Data.EF
             modelBuilder.Entity<OrderDto>(action =>
             {
                 action.Property(dto => dto.Id).IsRequired();
-                action.Property(dto => dto.DeliveryServiceName).HasMaxLength(40);
+                action.Property(dto => dto.DeliveryServiceName).HasMaxLength(40).IsRequired(false);
+                action.Property(dto => dto.DeliveryDescription).IsRequired(false);
+                action.Property(dto => dto.PaymentDescription).IsRequired(false);
+
 
                 action.Property(dto => dto.DeliveryPrice).HasColumnType("money");
-                action.Property(dto => dto.PaymentServiceName).HasMaxLength(40);
+                action.Property(dto => dto.PaymentServiceName).HasMaxLength(40).IsRequired(false);
                 action.Property(dto => dto.CellPhone).HasMaxLength(20).IsRequired(false);
-                action.Property(dto => dto.PaymentParameters).
-                    HasConversion(
+                action.Property(dto => dto.PaymentParameters).IsRequired(false)
+                .HasConversion(
                     value => JsonConvert.SerializeObject(value),
                     value => JsonConvert.DeserializeObject<Dictionary<string, string>>(value))
                     .Metadata.SetValueComparer(DictionaryComparer);
 
-                action.Property(dto => dto.DeliveryParameters).
+                action.Property(dto => dto.DeliveryParameters).IsRequired(false).
                 HasConversion(
                 value => JsonConvert.SerializeObject(value),
                 value => JsonConvert.DeserializeObject<Dictionary<string, string>>(value))

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Store.Data;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,30 +12,46 @@ namespace Store.Tests
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                new Order(1, null);
+                var order = new Order(
+                    new OrderDto
+                    {
+                        Id=1,
+                        Items = null
+                    }
+                    );
+
+
             });
-        }
-       
+           }
+
         [Fact]
         public void Get_WithExistingItem_ReturnItem()
         {
-            var order = new Order(1, new OrderItem[] {
-            new OrderItem(1,3m,2),
-            new OrderItem(2,5m,4),
-            });
-            Assert.Throws<InvalidOperationException>(()=> 
+            var order = CreateEmptyTestOrder();
+            Assert.Throws<InvalidOperationException>(() =>
             {
                 order.Items.Get(100);
-                
+
             });
         }
+
+        private Order CreateEmptyTestOrder()
+        {
+            return new Order(new Data.OrderDto
+            {
+                Id = 1,
+                Items = new OrderItemDto[0]
+            });
+        }
+
         [Fact]
         public void AddOrUpdateItem_WithExistingItem_UpdatesCount()
         {
-            var order = new Order(1, new OrderItem[] {
-            new OrderItem(1,2m,2),
+            var order = CreateOrderTest();
+            var book = new Book(new BookDto
+            {
+                Id = 1
             });
-            var book = new Book(1, null,null,null,null,1m);
             Assert.Throws<InvalidOperationException>(() =>
             {
                 order.Items.Add(book.Id, 2m, 5);
@@ -42,37 +59,46 @@ namespace Store.Tests
             });
         }
         [Fact]
-        public void AddOrUpdateItem_WithNonExistingItem_AddsCount()
+        public void Add_WithNewItem_SetsCount()
         {
-            var order = new Order(1, new OrderItem[] {
-            new OrderItem(1,2,2)
-            });
-            var book = new Book(2, null, null, null, null, 1m);
-            order.Items.Add(2,30m,3);
-            Assert.Equal(3, order.Items.Get(2).Count);
+            var order = CreateOrderTest();
+
+            order.Items.Add(4, 30m, 10);
+
+            Assert.Equal(10, order.Items.Get(4).Count);
+
         }
         [Fact]
         public void Remove_WithExistingItem_RemovesItem()
         {
-            var order = new Order(1, new OrderItem[] {
-            new OrderItem(1,3m,2),
-            new OrderItem(2,5m,4),
-            });
+            var order = CreateOrderTest();
+            
             order.Items.Remove(1);
             Assert.Collection(order.Items,
                              item => Assert.Equal(2, item.BookId));
         }
-        [Fact]
+      
+        private  Order CreateOrderTest()
+        {
+            return new Order(new OrderDto
+            {
+                Id = 1,
+                Items = new List<OrderItemDto>
+                {
+                     new OrderItemDto{BookId=1,Price=10m,Count=3},
+                      new OrderItemDto{BookId=2,Price=10m,Count=5},
+
+                }
+            });
+        }
         public void Remove_WithNonExistingItem_ThrowsInvalidOperation()
         {
-            var order = new Order(1, new OrderItem[] {
-            new OrderItem(1,3m,2),
-            new OrderItem(2,5m,4),
-            });
+            var order = CreateOrderTest();
             Assert.Throws<InvalidOperationException>(() =>
             {
                 order.Items.Remove(3);
             });
         }
+        
     }
 }

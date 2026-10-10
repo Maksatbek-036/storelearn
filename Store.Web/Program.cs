@@ -1,6 +1,6 @@
 using Store;
 using Store.Contractors;
-using Store.Memory;
+using Store.Data.EF;
 using Store.Messages;
 using Store.Web.App;
 using Store.Web.Contractors;
@@ -16,11 +16,14 @@ builder.Services.AddSession(
         options.Cookie.HttpOnly = true;
         options.Cookie.IsEssential = true;
     });
+
+string connetctionString = builder.Configuration.GetConnectionString("Store");
+
+builder.Services.AddEfRepositories(connetctionString);
 builder.Services.AddControllersWithViews();
 builder.Services.AddMvc();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSingleton<IBookRepository, BookRepository>();
-builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+
 builder.Services.AddSingleton<INotificationService, DebugNotificationService>();
 builder.Services.AddSingleton<IDeliveryService, PostamateDeliveryService>();
 builder.Services.AddSingleton<IPaymentService, CashPaymentService>();

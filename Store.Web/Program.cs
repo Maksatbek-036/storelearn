@@ -9,6 +9,8 @@ using Store.YandexKassa;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(
     options=> { 
@@ -20,7 +22,11 @@ builder.Services.AddSession(
 string connetctionString = builder.Configuration.GetConnectionString("Store");
 
 builder.Services.AddEfRepositories(connetctionString);
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options=>
+{
+    options.Filters.Add(typeof(Store.Web.ExceptionFilter));
+}
+);
 builder.Services.AddMvc();
 builder.Services.AddHttpContextAccessor();
 
@@ -36,11 +42,16 @@ builder.Services.AddSingleton<OrderService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (false)
+{
+    app.UseDeveloperExceptionPage();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+
 }
 
 app.UseHttpsRedirection();

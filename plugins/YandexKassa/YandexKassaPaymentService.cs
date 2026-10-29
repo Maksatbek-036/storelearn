@@ -11,7 +11,7 @@ namespace Store.YandexKassa
 {
     public class YandexKassaPaymentService : IPaymentService, IWebContractorService
     {
-        public string Name => "Yandex.Kassa";
+        public string Name => "YandexKassa";
         private readonly IHttpContextAccessor httpContextAccessor;
         public YandexKassaPaymentService(IHttpContextAccessor httpContextAccessor) 
         {

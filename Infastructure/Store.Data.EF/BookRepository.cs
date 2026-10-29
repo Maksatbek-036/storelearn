@@ -31,7 +31,7 @@ namespace Store.Data.EF
             if (Book.TryFormatIsbn(isbn,out string formattedIsbn))
             {
                 return dbContext.Books
-                           .Where(book => book.Isbn==formattedIsbn)
+                           .Where(book => book.Isbn == formattedIsbn)
                            .AsEnumerable()
                            .Select(Book.Mapper.Map)
                            .ToArray();

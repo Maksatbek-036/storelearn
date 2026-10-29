@@ -107,6 +107,10 @@ namespace Store.Web.Controllers
                 Path = Url.Action(action),
                 Query =null
             };
+            if (builder.Port != null)
+            {
+                builder.Port = Request.Host.Port.Value;
+            }
             return builder.Uri;
         }
 

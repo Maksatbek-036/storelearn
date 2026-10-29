@@ -193,20 +193,20 @@ namespace Store.Web.App
             }
         }
 
-        public object GetOrderBooks()
-        {
-            throw new NotImplementedException();
-        }
+    
 
         public void SetDelivery(OrderDelivery delivery)
         {
-            GetOrder().Delivery = delivery;
+            var order = GetOrder();
+            order.Delivery = delivery;
+            orderRepository.Update(order);
         }
 
         public OrderModel SetPayment(OrderPayment payment)
         {
             var order = GetOrder();
             order.Payment=payment;
+            Session.RemoveCart();
             return Map(order);
         }
     }

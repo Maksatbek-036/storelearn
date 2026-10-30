@@ -207,6 +207,8 @@ namespace Store.Web.App
             var order = GetOrder();
             order.Payment=payment;
             Session.RemoveCart();
+
+            notificationService.StartProcess(order);
             return Map(order);
         }
     }

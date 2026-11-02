@@ -11,7 +11,7 @@ namespace Store.Web.Controllers
         {
             this.bookService = bookService;
         }
-        public async Task<IActionResult> IndexAsync(int id)
+        public async Task<IActionResult> Index(int id)
         {
             var model=await bookService.GetByIdAsync(id);
             return View(model);

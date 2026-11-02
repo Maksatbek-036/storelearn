@@ -31,48 +31,59 @@ namespace Store.Web.Controllers
 
 
 
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+            
+        //  if(orderService.TryGetModel(out OrderModel model))
+        //    {
+        //        return View(model);
+        //    }
+        //    return View("Empty");
+        //}
+        public async Task<ActionResult> Index()
         {
-          if(orderService.TryGetModel(out OrderModel model))
+            var (hasvalue, model) = await orderService.TryGetModelAsync();
+            if (hasvalue)
             {
                 return View(model);
             }
             return View("Empty");
         }
-       
+
+
         [HttpPost]
-        public IActionResult UpdateItem(int id, int count)
+        public async Task<IActionResult> UpdateItem(int id, int count)
         {
-          orderService.UpdateBook(id, count);
+         await orderService.UpdateBookAsync(id, count);
             return RedirectToAction("Index", "Book", new { id });
         }
-        public IActionResult AddItem(int bookId, int count = 1)
+        public async Task<IActionResult> AddItem(int bookId, int count = 1)
         {
-           orderService.AddBook(bookId, count);
+           await orderService.AddBookAsync(bookId, count);
             return RedirectToAction("Index", "Book", new { id = bookId });
         }
-        public IActionResult RemoveItem(int bookId)
+        public async Task<IActionResult> RemoveItem(int bookId)
         {
-            orderService.RemoveBook(bookId);
+            var model=await orderService.RemoveBookAsync(bookId);
        
 
-            return RedirectToAction("Index", "Order");
+            return RedirectToAction("Index", model);
         }
      
         [HttpPost]
-        public IActionResult SendConfirmationCode(int id, string cellPhone)
+        public async Task<IActionResult> SendConfirmationCode(int id, string cellPhone)
         {
 
-            var model=orderService.SendConfirmation(cellPhone);
+            var model=await orderService.SendConfirmationAsync(cellPhone);
             return View("Confirmation", model);
           
         }
 
        
         [HttpPost]
-        public IActionResult Confirmate(string cellPhone, int confirmationCode)
+        public async Task<IActionResult> Confirmate(string cellPhone, int confirmationCode)
         {
-            var model=orderService.ConfirmCellPhone(cellPhone, confirmationCode);
+            var model=await orderService.ConfirmCellPhoneAsync(cellPhone, confirmationCode);
             if (model.Errors.Count > 0)
             {
                 return View("Confirmation", model);
@@ -82,10 +93,10 @@ namespace Store.Web.Controllers
 
             return View("DeliveryMethod", deliveryMethods);
         }
-        public IActionResult StartDelivery(string serviceName)
+        public async Task<IActionResult> StartDelivery(string serviceName)
         {
             var deliveryService = deliveryServices.Single(service => service.Name == serviceName);
-            var order = orderService.GetOrder();
+            var order = await orderService.GetOrderAsync();
          
             var form = deliveryService.FirstForm(order);
 
@@ -95,7 +106,7 @@ namespace Store.Web.Controllers
                 return View("DeliveryStep", form);
             }
             var returnUri = GetReturnUri(nameof(NextDelivery));
-            var redirectUri = webContractorService.StartSession(form.Parameters,returnUri);
+            var redirectUri = await webContractorService.StartSessionAsync(form.Parameters,returnUri);
 
             return Redirect(redirectUri.ToString());
         }
@@ -115,7 +126,7 @@ namespace Store.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult StartPayment(string serviceName)
+        public async Task<IActionResult> StartPayment(string serviceName)
         {
             var paymentService = paymentServices.Single(service => service.Name == serviceName);
             var order = orderService.GetOrder();
@@ -126,7 +137,7 @@ namespace Store.Web.Controllers
                 return View("PaymentStep",form);
 
             var returnUri = GetReturnUri(nameof(NextPayment));
-            var redirectUri = webContractorservice.StartSession(form.Parameters, returnUri);
+            var redirectUri = await webContractorservice.StartSessionAsync(form.Parameters, returnUri);
 
             return Redirect(redirectUri.ToString());
         }
@@ -136,7 +147,7 @@ namespace Store.Web.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult NextPayment( string serviceName, int step, Dictionary<string, string> values)
+        public async Task<IActionResult> NextPayment( string serviceName, int step, Dictionary<string, string> values)
         {
             var paymentService=paymentServices.Single(service=>service.Name == serviceName);
             var form=paymentService.NextForm(step, values);
@@ -145,12 +156,12 @@ namespace Store.Web.Controllers
                 return View("PaymentStep",form);
             }
             var payment = paymentService.GetPayment(form);
-            var model=orderService.SetPayment(payment);
+            var model=await orderService.SetPaymentAsync(payment);
             return View("Finish", model);
             
         }
         [HttpPost]
-        public IActionResult NextDelivery( string serviceName, int step, Dictionary<string, string> values)
+        public async Task<IActionResult> NextDelivery( string serviceName, int step, Dictionary<string, string> values)
         {
             var deliveryService = deliveryServices.Single(service => service.Name == serviceName);
             var form = deliveryService.NextForm(step, values);
@@ -160,7 +171,7 @@ namespace Store.Web.Controllers
                 return View("DeliveryStep", form);
             }
             var delivery = deliveryService.GetDelivery(form);
-            orderService.SetDelivery(delivery);
+            await orderService.SetDeliveryAsync(delivery);
 
             var paymentMethods = paymentServices.ToDictionary(service => service.Name,
                 service => service.Title);

@@ -4,6 +4,7 @@ using Store.Messages;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net;
 using System.Text;
 
 namespace Store.Web.App
@@ -38,6 +39,19 @@ namespace Store.Web.App
             model = null;
             return false;
         }
+        public async Task<(bool hasValue,OrderModel model)> TryGetModelAsync()
+        {
+            var (hasvalue, order) = await TryGetOrderAsync();
+            if (hasvalue)
+            {
+                var model = Map(order);
+                return (true, model);
+            }
+            return (false, null);
+           
+        }
+
+       
 
         private OrderModel Map(Order order)
         {
@@ -82,6 +96,16 @@ namespace Store.Web.App
             order = null;
             return false;
         }
+        private async Task<(bool hasvalue, Order order)> TryGetOrderAsync()
+        {
+            if (Session.TryGetCart(out Cart cart))
+            {
+               var order = await orderRepository.GetByIdAsync(cart.OrderId);
+                return (true,order);
+            }
+            
+            return (false,null);
+        }
         public OrderModel AddBook(int bookId,int count)
         {
             if (count < 1)
@@ -96,6 +120,20 @@ namespace Store.Web.App
            
             return Map(order);
         }
+        public async Task<OrderModel> AddBookAsync(int bookId, int count)
+        {
+            if (count < 1)
+                throw new InvalidOperationException("Too few books to add");
+            var (hasvalue, order) = await TryGetOrderAsync();
+            if (!hasvalue)
+                order =await orderRepository.CreateAsync();
+
+            await AddOrUpdateBookAsync(order, bookId, count);
+            UpdateSession(order);
+            return Map(order);
+        }
+
+      
 
         private void UpdateSession(Order order)
         {
@@ -114,20 +152,37 @@ namespace Store.Web.App
             {
                 order.Items.Add(book.Id, book.Price, count);
             }
-            orderRepository.Update(order);
+           orderRepository.Update(order);
         }
-        public OrderModel UpdateBook(int bookId,int count)
+        private async Task AddOrUpdateBookAsync(Order order, int bookId, int count)
         {
-            var order = GetOrder();
+            var book = await bookRepository.GetByIdAsync(bookId);
+            if (order.Items.TryGet(bookId, out OrderItem orderItems))
+            {
+                orderItems.Count += count;
+            }
+            else
+            {
+                order.Items.Add(book.Id, book.Price, count);
+            }
+           await orderRepository.UpdateAsync(order);
+        }
+       
+        public async Task<OrderModel> UpdateBookAsync(int bookId, int count)
+        {
+            var order = await GetOrderAsync();
             order.Items.Get(bookId).Count = count;
             UpdateSession(order);
             return Map(order);
         }
-        public OrderModel RemoveBook(int bookId)
+
+      
+       
+        public async Task<OrderModel> RemoveBookAsync(int bookId)
         {
-            var order = GetOrder();
+            var order = await GetOrderAsync();
             order.Items.Remove(bookId);
-            orderRepository.Update(order);
+             await orderRepository.UpdateAsync(order);
             UpdateSession(order);
             return Map(order);
         }
@@ -139,24 +194,36 @@ namespace Store.Web.App
             else
                 throw new InvalidOperationException("Empty session.");
         }
-        public OrderModel SendConfirmation(string cellPhone)
+        public async Task<Order> GetOrderAsync()
         {
-            var order = GetOrder();
+            var (hasValue, order) = await TryGetOrderAsync();
+            if(hasValue)
+                return order;
+            else
+                throw new InvalidOperationException("Empty session.");
+        }
+
+     
+        public async Task<OrderModel> SendConfirmationAsync(string cellPhone)
+        {
+            var order = await GetOrderAsync();
             var model = Map(order);
-            if(TryFormatPhone(cellPhone,out string formattedPhone))
+            if (TryFormatPhone(cellPhone, out string formattedPhone))
             {
                 var confirmationCode = 1111; //TODO:random.Next(1000,1000)
                 model.CellPhone = formattedPhone;
                 Session.SetInt32(formattedPhone, confirmationCode);
-                notificationService.SendConfirmationCode(formattedPhone, confirmationCode);
+                await notificationService.SendConfirmationCodeAsync(formattedPhone, confirmationCode);
             }
             else
             {
                 model.Errors["cellPhone"] = "Номер не соотвествует формату +996774250425";
             }
             return model;
+
         }
-        public OrderModel ConfirmCellPhone(string cellPhone,int confirmationCode)
+    
+        public async Task<OrderModel> ConfirmCellPhoneAsync(string cellPhone, int confirmationCode)
         {
             int? storeCode = Session.GetInt32(cellPhone);
             var model = new OrderModel();
@@ -165,18 +232,18 @@ namespace Store.Web.App
                 model.Errors["cellPhone"] = "Что-то случилось. Попробуйте получить код еще раз.";
                 return model;
             }
-            if (storeCode != confirmationCode) {
+            if (storeCode != confirmationCode)
+            {
                 model.Errors["confirmationCode"] = "Неверный код. Проверьте и попробуйте еще раз.";
                 return model;
             }
-            var order=GetOrder();
-            order.CellPhone=cellPhone;
-            orderRepository.Update(order);
+            var order = await GetOrderAsync();
+            order.CellPhone = cellPhone;
+            await orderRepository.UpdateAsync(order);
             Session.Remove(cellPhone);
             return Map(order);
-            
-
         }
+
         private readonly PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.GetInstance();
         private bool TryFormatPhone(string cellPhone, out string formattedPhone)
         {
@@ -195,21 +262,25 @@ namespace Store.Web.App
 
     
 
-        public void SetDelivery(OrderDelivery delivery)
+       
+        public async Task<OrderModel> SetPaymentAsync(OrderPayment payment)
         {
-            var order = GetOrder();
-            order.Delivery = delivery;
-            orderRepository.Update(order);
-        }
-
-        public OrderModel SetPayment(OrderPayment payment)
-        {
-            var order = GetOrder();
-            order.Payment=payment;
+            var order = await GetOrderAsync();
+            order.Payment = payment;
             Session.RemoveCart();
 
-            notificationService.StartProcess(order);
+            await notificationService.StartProcessAsync(order);
             return Map(order);
         }
+
+        public async Task<OrderModel> SetDeliveryAsync(OrderDelivery delivery)
+        {
+            var order = await GetOrderAsync();
+            order.Delivery = delivery;
+            await orderRepository.UpdateAsync(order);
+            return Map(order);
+        }
+
+
     }
 }

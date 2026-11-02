@@ -11,5 +11,8 @@ namespace Store
         Book[] GetAllByIsbn(string isbn);
         Book[] GetAllByIds(IEnumerable<int> ids);
         Book GetById(int id);
+        Task<Book[]> GetAllByTitleOrAuthorAsync(string titleOrAuthor);
+        Task<Book[]> GetAllByIsbnAsync(string isbn);
+        Task<Book> GetByIdAsync(int id);
     }
 }

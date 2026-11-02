@@ -4,8 +4,7 @@
 }
 <p>Заказ оформлен. Мы собираем его, чтобы передать в службу доставкм</p>
 
-    @foreach(var item in Model.Items)
-    {
+   
         <table class="table table-sm table table-striped">
             <thead>
                 <tr>
@@ -37,15 +36,16 @@
             </tfoot>
             </thead>
             </table>
-            <strong>Доставка</strong>
-            <pre>
+            
+    
+<strong>Доставка</strong>
+<pre>
                 @Model.DeliveryDescription
             </pre>
-            <strong>Оплата</strong>
-            <pre>
+<strong>Оплата</strong>
+<pre>
                 @Model.PaymentDescription
             </pre>
-    }
     
     <a href="@Url.Action("Index","Home")">Вернутся в магазин</a>
 </p>

@@ -39,6 +39,21 @@ namespace Store.Data.EF
             return new Book[0];
         }
 
+        public async Task<Book[]> GetAllByIsbnAsync(string isbn)
+        {
+            var dbContext = dbContextFactory.Create(typeof(BookRepository));
+            if (Book.TryFormatIsbn(isbn, out string formattedIsbn))
+            {
+                var dtos=await dbContext.Books
+                           .Where(book => book.Isbn == formattedIsbn)
+                           .ToArrayAsync();
+
+                return dtos.Select(Book.Mapper.Map)
+                    .ToArray();
+            }
+            return new Book[0];
+        }
+
         public Book[] GetAllByTitleOrAuthor(string titleOrAuthor)
         {
             var dbContext = dbContextFactory.Create(typeof(BookRepository));
@@ -51,12 +66,34 @@ namespace Store.Data.EF
                             .ToArray();
         }
 
+        public async Task<Book[]> GetAllByTitleOrAuthorAsync(string titleOrAuthor)
+        {
+            var dbContext = dbContextFactory.Create(typeof(BookRepository));
+            var parameter = new SqlParameter("@titleOrAuthor", titleOrAuthor);
+            var dtos=await dbContext.Books
+                            .FromSqlRaw("SELECT * FROM Books WHERE CONTAINS((Author, Title), @titleOrAuthor)",
+                                        parameter)
+                            .ToArrayAsync();
+            return dtos.Select(Book.Mapper.Map)
+                .ToArray();
+        }
+
         public Book GetById(int id)
         {
             var dbContext = dbContextFactory.Create(typeof(BookRepository));
 
             var dto = dbContext.Books
                                .Single(book => book.Id == id);
+
+            return Book.Mapper.Map(dto);
+        }
+
+        public async Task<Book> GetByIdAsync(int id)
+        {
+            var dbContext = dbContextFactory.Create(typeof(BookRepository));
+
+            var dto = await dbContext.Books
+                               .SingleAsync(book => book.Id == id);
 
             return Book.Mapper.Map(dto);
         }
